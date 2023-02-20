@@ -14,11 +14,11 @@
     </style>
   </head>
   <body>
-    <h3>Upload a video to transcode to mp4 (x264), draw a text and play!</h3>
+    <h3>select tesla dashcam</h3>
     <video width="300" height="200" id="output-video" controls></video><br/>
     <input type="file" id="uploader">
     <p id="message">Upload a video</p>
-    <p id="message2">Upload a video</p>
+    <p id="message2"> </p>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/arial.ttf.js"></script>
     <script type="text/javascript">
@@ -27,14 +27,6 @@
 
       const str = '2022-01-25_22-15-51-left.mp4';
 
-      const arr = str.replaceAll('-front.mp4','')
-        .replaceAll('-back.mp4','')
-        .replaceAll('-left.mp4','')
-        .replaceAll('-right.mp4','');
-
-
-
-      message2.innerHTML = arr;
 
       const transcode = async ({ target: { files } }) => {
         const IN_FILE_NAME = 'video.avi';
