@@ -69,6 +69,14 @@ crossorigin="anonymous"></script>
       const str = '2022-01-25_22-15-51-left.mp4';
 
           
+      String.prototype.format = function() {
+          var formatted = this;
+          for( var arg in arguments ) {
+              formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+          }
+          return formatted;
+      };
+
 
       function getText(str) {
 
@@ -79,21 +87,28 @@ crossorigin="anonymous"></script>
     
         const text2 = text.split('_');
         const text3 = text2[1].split('-');
-        return text2[0] + '   TIME\\=' + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
+        //return text2[0] + '   TIME\\=' + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
+        //return "\\'" + text2[0] + "   TIME=\\':timecode=" + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
+        return "\\'{0}  TIME=\\':timecode=\\'{1}:{2}:{3}:00\\'".format(text2[0], text3[0], text3[1],text3[2]);
       }
 
       //message2.innerHTML = getText(str);
 
-      const transcode = async ({ target: { files } }) => {
+        const transcode = async ({ target: { files } }) => {
         const IN_FILE_NAME = 'video.mp4';
         const OUT_FILE_NAME = 'video2.mp4';
         
-      const data = new Uint8Array(await readFromBlobOrFile(files[0]));
+        const data = new Uint8Array(await readFromBlobOrFile(files[0]));
 
-      message2.innerHTML = getText(files[0].name);
+        message2.innerHTML = getText(files[0].name);
+        console.log( getText(files[0].name));
 
         //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=\'' +getText(files[0].name) + '\':fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(files[0].name) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        
+        //const param = "drawtext=text=\\'sdfsdf\\':timecode=\\'09\:57\:00\:00\\':rate=30:fontfile=arial.ttf:fontsize=24:x=(w-text_w)/10:y=text_h+10";
+
+        // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
         const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
