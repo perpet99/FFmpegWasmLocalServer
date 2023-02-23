@@ -33,8 +33,9 @@ crossorigin="anonymous"></script>
     <h3>select tesla dashcam (테슬라 녹화영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
     
     <h3>영상 변환 시간이 오래걸립니다. 영상이 로딩될때까지 기다려 주세요 (3분-4분 소요)</h3>
-
+    <form>
     <input type="file" id="uploader">
+    </form>
 
     <video width="300" height="200" id="output-video" controls></video><br/>
     
@@ -62,28 +63,38 @@ crossorigin="anonymous"></script>
 
       const str = '2022-01-25_22-15-51-left.mp4';
 
+          
 
-      const transcode = async ({ target: { files } }) => {
-        const IN_FILE_NAME = 'video.avi';
-      //  const OUT_FILE_NAME = 'video.mp4';
-        
+      function getText(str) {
+
         const text = str.replaceAll('-front.mp4','')
           .replaceAll('-back.mp4','')
           .replaceAll('-left.mp4','')
-          .replaceAll('-right.mp4','') 
-          .replaceAll('_','  ') ;
-        
-        const OUT_FILE_NAME =  text  + '.mp4'; 
+          .replaceAll('-right.mp4','') ;
+    
+        const text2 = text.split('_');
+        const text3 = text2[1].split('-');
+        return text2[0] + '   TIME\\=' + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
+      }
 
-        message2.innerHTML = OUT_FILE_NAME;
+      message2.innerHTML = getText(str);
+
+      const transcode = async ({ target: { files } }) => {
+        const IN_FILE_NAME = 'video.mp4';
+        const OUT_FILE_NAME = 'video2.mp4';
         
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=\'' +text + '\':fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+      const data = new Uint8Array(await readFromBlobOrFile(files[0]));
+
+      message2.innerHTML = getText(files[0].name);
+
+        //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=\'' +getText(files[0].name) + '\':fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
         const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
 
         message.innerHTML = 'Writing file to MEMFS';
-        const data = new Uint8Array(await readFromBlobOrFile(files[0]));
+        
         const now = Date.now();
         console.time(`[${now}] ${files[0].name} execution time`);
         message.innerHTML = 'Start to transcode';
