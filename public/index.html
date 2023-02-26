@@ -28,7 +28,7 @@ crossorigin="anonymous"></script>
 
   </head>
   <body>
-    <h3>pc, mobile  크롬 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
+    <h3>pc, mobile  크롬, 파이어폭스 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
 
     <h3>select tesla dashcam (테슬라 녹화영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
     
@@ -41,7 +41,13 @@ crossorigin="anonymous"></script>
     </form>
 
     <video width="640" height="480" id="output-video" controls></video><br/>
+
     
+    <a id="download" >
+      download
+    </a>
+
+
     <p id="message">Upload a video</p>
     <p id="message2"> </p>
 
@@ -68,6 +74,7 @@ crossorigin="anonymous"></script>
     <script type="text/javascript">
       const message = document.getElementById('message');
       const message2 = document.getElementById('message2');
+      const download = document.getElementById('download');
 
       const str = '2022-01-25_22-15-51-left.mp4';
 
@@ -80,13 +87,25 @@ crossorigin="anonymous"></script>
           return formatted;
       };
 
+      function download2(dataurl, filename,name) {
+        const link = document.getElementById(name);
+        link.href = dataurl;
+        link.download = filename;
+        //link.click();
+      }
 
-      function getText(str) {
-
-        const text = str.replaceAll('-front.mp4','')
+      function removeFileName(str)
+      {
+        return str.replaceAll('-front.mp4','')
           .replaceAll('-back.mp4','')
           .replaceAll('-left.mp4','')
           .replaceAll('-right.mp4','') ;
+
+      }
+
+      function getText(str) {
+
+        const text = removeFileName(str);
     
         const text2 = text.split('_');
         const text3 = text2[1].split('-');
@@ -144,6 +163,9 @@ crossorigin="anonymous"></script>
         const { file } = await runFFmpeg(IN_FILE_NAME, data, args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
         const video = document.getElementById('output-video');
         video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
+
+        download2(video.src,removeFileName(files[0].name)+'.mp4','download');
+
         console.timeEnd(`[${now}] ${files[0].name} execution time`);
       };
       document.getElementById('uploader').addEventListener('change', transcode);
