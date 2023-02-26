@@ -98,15 +98,15 @@ crossorigin="anonymous"></script>
       {
         return str.replaceAll('-front.mp4','')
           .replaceAll('-back.mp4','')
-          .replaceAll('-left.mp4','')
-          .replaceAll('-right.mp4','') ;
+          .replaceAll('-left_repeater.mp4','')
+          .replaceAll('-right_repeater.mp4','') ;
 
       }
 
       function getText(str) {
 
         const text = removeFileName(str);
-    
+        console.log(text)
         const text2 = text.split('_');
         const text3 = text2[1].split('-');
         //return text2[0] + '   TIME\\=' + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
