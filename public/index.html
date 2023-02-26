@@ -33,11 +33,14 @@ crossorigin="anonymous"></script>
     <h3>select tesla dashcam (테슬라 녹화영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
     
     <h3>영상 변환 시간이 오래걸립니다. 영상이 로딩될때까지 기다려 주세요 (3분-4분 소요)</h3>
+
+    <h3>날짜정보를 파일명에서 얻어 옵니다. 파일명 변경을 하시면 안됩니다 (카카오톡으로 옮기시면 파일명이 변경됩니다)</h3>
+
     <form>
-    <input type="file" id="uploader">
+    <input type="file" id="uploader" >
     </form>
 
-    <video width="300" height="200" id="output-video" controls></video><br/>
+    <video width="640" height="480" id="output-video" controls></video><br/>
     
     <p id="message">Upload a video</p>
     <p id="message2"> </p>
@@ -100,8 +103,16 @@ crossorigin="anonymous"></script>
         
         const data = new Uint8Array(await readFromBlobOrFile(files[0]));
 
-        message2.innerHTML = getText(files[0].name);
-        console.log( getText(files[0].name));
+        try{
+
+          message.innerHTML = getText(files[0].name);
+        }catch (err)
+        {
+          message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다. 파일명 변경을 하시면 안됩니다.!';
+          return;
+        }
+        
+        // console.log( getText(files[0].name));
 
         //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
         const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(files[0].name) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
@@ -115,11 +126,11 @@ crossorigin="anonymous"></script>
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
         const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
 
-        message.innerHTML = 'Writing file to MEMFS';
+        //message.innerHTML = 'Writing file to MEMFS';
         
         const now = Date.now();
         console.time(`[${now}] ${files[0].name} execution time`);
-        message.innerHTML = 'Start to transcode';
+        //message.innerHTML = 'Start to transcode';
         const { file } = await runFFmpeg(IN_FILE_NAME, data, args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
         const video = document.getElementById('output-video');
         video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
