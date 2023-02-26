@@ -92,6 +92,12 @@ crossorigin="anonymous"></script>
         const text3 = text2[1].split('-');
         //return text2[0] + '   TIME\\=' + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
         //return "\\'" + text2[0] + "   TIME=\\':timecode=" + text3[0] + '\\:'+text3[1] +'\\:'+ text3[2]; 
+        if( text2.lenght != 2)
+          throw 'error'
+
+        if( text3.lenght != 3)
+          throw 'error'
+
         return "\\'{0}  TIME=\\':timecode=\\'{1}:{2}:{3}:00\\'".format(text2[0], text3[0], text3[1],text3[2]);
       }
 
@@ -108,6 +114,7 @@ crossorigin="anonymous"></script>
           message.innerHTML = getText(files[0].name);
         }catch (err)
         {
+          message.style.color = 'red';
           message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다. 파일명 변경을 하시면 안됩니다.!';
           return;
         }
