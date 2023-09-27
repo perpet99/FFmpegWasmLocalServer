@@ -28,6 +28,7 @@ crossorigin="anonymous"></script>
 
   </head>
   <body>
+
     <h3>pc, mobile  크롬, 파이어폭스 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
 
     <h3>select tesla dashcam (테슬라 녹화영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
@@ -40,13 +41,24 @@ crossorigin="anonymous"></script>
     <input type="file" id="uploader" style="font-size:28px;">
     </form>
 
+    
+    <label for="datetime">날짜와 시간을 선택하세요:
+      <input type="datetime-local"
+             id="datetime"
+             >
+    </label>
+
+    <input type='button' style="font-size:28px;" value='변환' id='convert' onclick='convert()'/>
+
+
+    <h3> </h3>
+
     <video width="640" height="480" id="output-video" controls></video><br/>
 
     
     <a id="download" style="font-size:56px;">
       download link
     </a>
-
 
     <p id="message">Upload a video</p>
     <p id="message2"> </p>
@@ -87,6 +99,80 @@ crossorigin="anonymous"></script>
           return formatted;
       };
 
+
+      function convertUTCDateToLocalDate(date) {
+        var newDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
+        return newDate;   
+      }
+
+      function convertUTCDateToLocalDate2(date) {
+        var newDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000);
+        return newDate;   
+      }
+
+
+      const dt = document.getElementById('datetime')
+
+      
+
+      dt.value = convertUTCDateToLocalDate(new Date()).toISOString().slice(0,16);
+      console.log(convertUTCDateToLocalDate(new Date()).toISOString().slice(0,16))
+      
+      console.log(getText2(new Date(dt.valueAsNumber)))
+
+      const date2 = convertUTCDateToLocalDate2(new Date(dt.valueAsNumber))
+      console.log(getText2(date2))
+
+      const btn = document.getElementById('convert')
+      
+
+      function init(){
+        
+      }
+
+      var fileData
+      //var dateInfo
+      function show(){
+
+      }
+
+
+      
+      async function convert(){
+
+        const IN_FILE_NAME = 'video.mp4';
+        const OUT_FILE_NAME = 'video2.mp4';
+        
+        
+        var dateInfo = getText2(convertUTCDateToLocalDate2(new Date(dt.valueAsNumber)))
+
+
+        //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        
+
+        
+        //const param = "drawtext=text=\\'sdfsdf\\':timecode=\\'09\:57\:00\:00\\':rate=30:fontfile=arial.ttf:fontsize=24:x=(w-text_w)/10:y=text_h+10";
+
+        // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
+
+        //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
+        const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
+
+        //message.innerHTML = 'Writing file to MEMFS';
+        
+        const now = Date.now();
+        console.time(`[${now}] ${dateInfo} execution time`);
+        //message.innerHTML = 'Start to transcode';
+        const { file } = await runFFmpeg(IN_FILE_NAME, fileData, args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
+        const video = document.getElementById('output-video');
+        video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
+
+        download2(video.src,removeFileName(dateInfo)+'.mp4','download');
+
+        console.timeEnd(`[${now}] ${dateInfo} execution time`);
+      }
+
       function download2(dataurl, filename,name) {
         const link = document.getElementById(name);
         link.href = dataurl;
@@ -102,6 +188,8 @@ crossorigin="anonymous"></script>
           .replaceAll('-right_repeater.mp4','') ;
 
       }
+
+
 
       function getText(str) {
 
@@ -122,52 +210,81 @@ crossorigin="anonymous"></script>
         return "\\'{0}  TIME=\\':timecode=\\'{1}:{2}:{3}:00\\'".format(text2[0], text3[0], text3[1],text3[2]);
       }
 
+      function getText2(date) {
+
+        let yyyy = date.getFullYear();
+
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+
+        month = month >= 10 ? month : '0' + month;
+        day = day >= 10 ? day : '0' + day;
+        hour = hour >= 10 ? hour : '0' + hour;
+        minute = minute >= 10 ? minute : '0' + minute;
+        second = second >= 10 ? second : '0' + second;
+
+
+        return "{0}-{1}-{2}_{3}-{4}-{5}".format(yyyy,month,day,hour,minute,second);
+        //return "\\'{0}-{1}-{2}  TIME=\\':timecode=\\'{3}:{4}:{5}:00\\'".format(yyyy,month,day,hour,minute,second);
+    }
+
+
+
       //message2.innerHTML = getText(str);
 
         const transcode = async ({ target: { files } }) => {
-        const IN_FILE_NAME = 'video.mp4';
-        const OUT_FILE_NAME = 'video2.mp4';
         
-        const data = new Uint8Array(await readFromBlobOrFile(files[0]));
+
 
         try{
 
           message.innerHTML = getText(files[0].name);
+
+          fileData = new Uint8Array(await readFromBlobOrFile(files[0]));
+        
+          dateInfo = files[0].name
+
+
+          let text = removeFileName(files[0].name);
+          console.log(text)
+          
+          var text2 = text.split('_');
+          var text3 = text2[0].split('-');
+          var text4 = text2[1].split('-');
+
+        
+          console.log(text2[0])
+
+          var str = "{0}-{1}-{2} {3}:{4}:{5}".format(text3[0],text3[1],text3[2],text4[0],text4[1],text4[2])
+          console.log(str)
+          var dd  = new Date(str)
+          
+          console.log(dd.toString())
+
+          dt.value = convertUTCDateToLocalDate(dd).toISOString().slice(0,16);
+
+
+
         }catch (err)
         {
+
           console.log(err)
           message.style.color = 'red';
-          message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다. 파일명 변경을 하시면 안됩니다.!';
+          message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다.! 직접 날짜를 선택해 주세요.';
           return;
         }
         
+        //await convert(data,files[0].name)
+
         // console.log( getText(files[0].name));
-
-        //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(files[0].name) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        
-
-        
-        //const param = "drawtext=text=\\'sdfsdf\\':timecode=\\'09\:57\:00\:00\\':rate=30:fontfile=arial.ttf:fontsize=24:x=(w-text_w)/10:y=text_h+10";
-
-        // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
-
-        //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
-        const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
-
-        //message.innerHTML = 'Writing file to MEMFS';
-        
-        const now = Date.now();
-        console.time(`[${now}] ${files[0].name} execution time`);
-        //message.innerHTML = 'Start to transcode';
-        const { file } = await runFFmpeg(IN_FILE_NAME, data, args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
-        const video = document.getElementById('output-video');
-        video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
-
-        download2(video.src,removeFileName(files[0].name)+'.mp4','download');
-
-        console.timeEnd(`[${now}] ${files[0].name} execution time`);
       };
+
+      
+
+
       document.getElementById('uploader').addEventListener('change', transcode);
     </script>
     
