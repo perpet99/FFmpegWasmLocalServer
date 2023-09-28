@@ -31,7 +31,7 @@ crossorigin="anonymous"></script>
 
     <h3>pc, mobile  크롬, 파이어폭스 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
 
-    <h3>select tesla dashcam (테슬라 녹화영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
+    <h3>select tesla dashcam (테슬라 녹화영상 또는 카메라 영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
     
     <h3>영상 변환 시간이 오래걸립니다. 영상이 로딩될때까지 기다려 주세요 (3분-4분 소요)</h3>
 
@@ -43,9 +43,10 @@ crossorigin="anonymous"></script>
 
     <p id="message">Upload a video</p>
     
-    <label for="datetime">날짜와 시간을 선택하세요:
+    <label for="datetime">날짜와 시간 수동 선택 가능합니다
       <input type="datetime-local"
              id="datetime"
+             step="1"
              >
     </label>
 
@@ -238,8 +239,9 @@ crossorigin="anonymous"></script>
 
         const transcode = async ({ target: { files } }) => {
         
-
-
+        let fileDate = null
+        
+        
         try{
 
           
@@ -263,17 +265,47 @@ crossorigin="anonymous"></script>
 
           var str = "{0}-{1}-{2} {3}:{4}:{5}".format(text3[0],text3[1],text3[2],text4[0],text4[1],text4[2])
           console.log(str)
-          var dd  = new Date(str)
-          
-          console.log(dd.toString())
 
-          dt.value = convertUTCDateToLocalDate(dd).toISOString().slice(0,16);
+          fileDate  = new Date(str)
+          
+          console.log(convertUTCDateToLocalDate(fileDate).toISOString())
+
+          dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
 
 
 
         }catch (err)
         {
 
+       
+
+          
+        }
+
+        try{
+          if( !fileDate ){
+            let fileName = files[0].name
+            let yy = fileName.substr(0,4)
+            let mm = fileName.substr(4,2)
+            let dd = fileName.substr(6,2)
+
+            let h = fileName.substr(9,2)
+            let m = fileName.substr(11,2)
+            let s = fileName.substr(13,2)
+            
+            var str = "{0}-{1}-{2} {3}:{4}:{5}".format(yy,mm,dd,h,m,s)
+            console.log(str)
+
+            fileDate  = new Date(str)
+            
+            console.log(fileDate.toString())
+
+            dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
+
+
+          }
+
+        }catch (err){
           console.log(err)
           message.style.color = 'red';
           message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다.! 직접 날짜를 선택해 주세요.';
@@ -284,8 +316,8 @@ crossorigin="anonymous"></script>
 
           dt.value = convertUTCDateToLocalDate(dd).toISOString().slice(0,16);
 
-          
         }
+
         
         //await convert(data,files[0].name)
 
