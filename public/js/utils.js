@@ -58,4 +58,44 @@ const runFFmpeg = async (ifilename, data, args, ofilename, extraFiles = [],messa
   return { Core, file };
 };
 
+
+const runFFmpeg2 = async (filelist = [] , args, ofilename,extraFiles = [],message) => {
+  let resolve = null;
+  let file = null;
+  const Core = await createFFmpegCore({
+    printErr: (m) => {
+      console.log(m);
+      message.innerHTML = m;
+    },
+    print: (m) => {
+      console.log(m);
+      if (m.startsWith('FFMPEG_END')) {
+        resolve();
+      }
+    },
+  });
+
+  filelist.forEach(({ name, data: d }) => {
+    Core.FS.writeFile(name, d);
+  });
+
+  extraFiles.forEach(({ name, data: d }) => {
+    Core.FS.writeFile(name, d);
+  });
+
+
+  ffmpeg(Core, args);
+
+  await new Promise((_resolve) => { resolve = _resolve });
+
+  if (typeof ofilename !== 'undefined') {
+    console.log("success")
+    console.log(ofilename)
+
+    file = Core.FS.readFile(ofilename);
+    Core.FS.unlink(ofilename);
+  }
+  return { Core, file };
+};
+
 const b64ToUint8Array = (str) => (Uint8Array.from(atob(str), c => c.charCodeAt(0)));

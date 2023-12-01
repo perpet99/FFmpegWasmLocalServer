@@ -29,39 +29,55 @@ crossorigin="anonymous"></script>
   </head>
   <body>
 
+
     <h3>MENU</h3>
 
+    <a href="./index.html">1. add date to video file</a>
     
-    <h3>1. add date to video file</h3>
-    <a href="./index2.html">2. merge video file</a>
-
+    <h3>2. merge video file</h3>
 
     <hr width="100%" />
 
-    <a href="https://www.youtube.com/watch?v=2srRDfk6Hbk">demo link</a>
+    <a href="https://www.youtube.com/watch?v=xRzQScmlwuQ">demo link</a>
 
-    <h3>pc, mobile  크롬, 파이어폭스 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
+    <h3>tesla dashcam file merge</h3>
+    <h3>you need file select 4 files </h3>
+    <h3>you can select multi file by mouse click with control key </h3>
 
-    <h3>select tesla dashcam (테슬라 녹화영상 또는 카메라 영상을 선택하시면 해당 녹화 시간을 영상에 찍어줍니다)</h3>
-    
-    <h3>영상 변환 시간이 오래걸립니다. 영상이 로딩될때까지 기다려 주세요 (3분-4분 소요)</h3>
-
-    <h3>날짜정보를 파일명에서 얻어 옵니다. 파일명 변경을 하시면 안됩니다 (카카오톡으로 옮기시면 파일명이 변경됩니다)</h3>
 
     <form>
-    <input type="file" id="uploader" style="font-size:28px;">
+    <input type="file" id="uploader" multiple style="font-size:28px;">
     </form>
 
     <p id="message">Upload a video</p>
     
-    <label for="datetime">날짜와 시간 수동 선택 가능합니다
+    <label for="datetime">recording date
       <input type="datetime-local"
              id="datetime"
              step="1"
+             disabled = "true"
              >
     </label>
 
-    <input type='button' style="font-size:28px;" value='변환' id='convert' onclick='convert()'/>
+
+    <h3>select merge type</h3>
+
+    <table border="1">
+      <th><input type="radio" name="chk_info" value="0" checked="checked">diamond</th>
+      <th><input type="radio" name="chk_info" value="1" >cross</th>
+      <th><input type="radio" name="chk_info" value="2">vertical</th>
+      <tr><!-- 첫번째 줄 시작 -->
+          <td><img src="4.jpg" alt="Option 1"></td>
+          <td><img src="5.jpg" alt="Option 2"></td>
+          <td><img src="6.jpg" alt="Option 3"></td>
+      </tr><!-- 첫번째 줄 끝 -->
+    </table>
+
+    
+    
+    <h3> </h3>
+
+    <input type='button' style="font-size:28px;" value='convert' id='convert' onclick='convert()'/>
 
 
     <h3> </h3>
@@ -78,20 +94,17 @@ crossorigin="anonymous"></script>
 
     <a href="mailto:perpet99@gmail.com"> developer email : perpet99@gmail.com</a>
     
-    
 
-    <h3>일반적으로 아래 빨간 부분 시간이 1분이 되어야 완료가 됩니다.</h3>
+
+    <h3>You have to wait until time is 00:00:60 sec </h3>
 
     <img src="2.png" alt="My Image">
    
 
-    <h3>변환이 완료된 후 아래처럼 빨간부분 아이콘을 클릭해서 다운받으세요.</h3>
+    <h3>you can download by link</h3>
 
     <img src="1.png" alt="My Image">
 
-    <h3>아래처럼 찍혀서 나옵니다.</h3>
-
-    <img src="3.png" alt="My Image">
 
 
     <script type="text/javascript" src="js/utils.js"></script>
@@ -143,7 +156,11 @@ crossorigin="anonymous"></script>
         
       }
 
-      var fileData
+      var fileDataL
+      var fileDataR
+      var fileDataB
+      var fileDataF
+
       //var dateInfo
       function show(){
 
@@ -153,7 +170,7 @@ crossorigin="anonymous"></script>
       
       async function convert(){
 
-        const IN_FILE_NAME = 'video.mp4';
+        //const IN_FILE_NAME = 'video.mp4';
         const OUT_FILE_NAME = 'video2.mp4';
         
         
@@ -161,7 +178,7 @@ crossorigin="anonymous"></script>
 
 
         //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
         
 
         
@@ -170,14 +187,38 @@ crossorigin="anonymous"></script>
         // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
-        const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
+        const param = '  -i 1.mp4 -i 2.mp4 -i 3.mp4 -i 4.mp4 -y -filter_complex "nullsrc = size = 160x480[base];[0:v] setpts = PTS - STARTPTS, scale = 160x120[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 160x120[upperright];[2:v] setpts = PTS - STARTPTS, scale = 160x120[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 160x120[lowerright];[base][upperleft] overlay = shortest = 1[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 120[tmp2];[tmp2][lowerleft] overlay = shortest = 1:y = 240[tmp3];[tmp3][lowerright] overlay = shortest = 1:y = 360" -c:v h264 video2.mp4'
+        //const param = ' '
+        //const args = [  param, OUT_FILE_NAME];
+        var args = ['-i', "1.mp4",'-i', "2.mp4",'-i', "3.mp4",'-i', "4.mp4",  param, OUT_FILE_NAME];
 
         //message.innerHTML = 'Writing file to MEMFS';
         
         const now = Date.now();
+
         console.time(`[${now}] ${dateInfo} execution time`);
         //message.innerHTML = 'Start to transcode';
-        const { file } = await runFFmpeg2([{ name: IN_FILE_NAME, data: fileData }], args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
+
+        var fileList =  [{ name: "1.mp4", data: fileDataF },{ name: "2.mp4", data: fileDataL},{ name: "3.mp4", data: fileDataR },{ name: "4.mp4", data: fileDataB }]
+
+        
+        
+        
+        
+        var type = document.querySelector('input[name="chk_info"]:checked').value;
+
+
+        if( type == "0"){
+          args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size= 1920x960[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1:x = 640[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 240[tmp2];[tmp2][lowerleft] overlay = shortest = 1:x = 1280:y = 240[tmp3];[tmp3][lowerright] overlay = shortest = 1:x=640:y = 480', '-pix_fmt', 'yuv420p','video2.mp4']
+        }else if(type == "1"){
+          args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size = 1280x1440[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1:x = 320[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 480[tmp2];[tmp2][lowerleft] overlay = shortest = 1:x = 640:y = 480[tmp3];[tmp3][lowerright] overlay = shortest = 1:x=320:y = 960', '-pix_fmt', 'yuv420p','video2.mp4']
+        }else{
+          args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size = 640x1920[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 480[tmp2];[tmp2][lowerleft] overlay = shortest = 1:y = 960[tmp3];[tmp3][lowerright] overlay = shortest = 1:y = 1440', '-pix_fmt', 'yuv420p','video2.mp4']
+        }
+
+
+        const { file } = await runFFmpeg2(fileList, args, OUT_FILE_NAME,[],message2)
+
         const video = document.getElementById('output-video');
         video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
 
@@ -257,9 +298,39 @@ crossorigin="anonymous"></script>
 
           
 
-          fileData = new Uint8Array(await readFromBlobOrFile(files[0]));
-        
-          dateInfo = files[0].name
+          
+          
+          var count = 0;
+
+          for (let i = 0; i < files.length; i++) {
+            var fi = files[i]
+            var str = fi.name
+            if( str.includes('-front.mp4')){
+              count++;
+              fileDataF = new Uint8Array(await readFromBlobOrFile(fi));
+            }
+            if( str.includes('-back.mp4')){
+              count++;
+              fileDataB = new Uint8Array(await readFromBlobOrFile(fi));
+            }
+            if( str.includes('-left_repeater.mp4')){
+              count++;
+              fileDataL = new Uint8Array(await readFromBlobOrFile(fi));
+            }
+            if( str.includes('-right_repeater.mp4')){
+              count++;
+              fileDataR = new Uint8Array(await readFromBlobOrFile(fi));
+            }
+          }
+         
+          if( count != 4){
+            console.log("load faile")
+            message.style.color = 'red';
+            message.innerHTML = "file load fail,you need select 4 files"
+            return
+          }else{
+            console.log("load success")
+          }
 
           message.innerHTML = getText(files[0].name);
 
@@ -283,52 +354,13 @@ crossorigin="anonymous"></script>
 
           dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
 
-
-
         }catch (err)
         {
 
-       
 
+            console.log(err)
           
         }
-
-        try{
-          if( !fileDate ){
-            let fileName = files[0].name
-            let yy = fileName.substr(0,4)
-            let mm = fileName.substr(4,2)
-            let dd = fileName.substr(6,2)
-
-            let h = fileName.substr(9,2)
-            let m = fileName.substr(11,2)
-            let s = fileName.substr(13,2)
-            
-            var str = "{0}-{1}-{2} {3}:{4}:{5}".format(yy,mm,dd,h,m,s)
-            console.log(str)
-
-            fileDate  = new Date(str)
-            
-            console.log(fileDate.toString())
-
-            dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
-
-
-          }
-
-        }catch (err){
-          console.log(err)
-          message.style.color = 'red';
-          message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다.! 직접 날짜를 선택해 주세요.';
-
-          var dd  = new Date()
-          
-          console.log(dd.toString())
-
-          dt.value = convertUTCDateToLocalDate(dd).toISOString().slice(0,16);
-
-        }
-
         
         //await convert(data,files[0].name)
 
