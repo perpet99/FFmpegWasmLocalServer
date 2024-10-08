@@ -42,7 +42,7 @@
 
         message2.innerHTML = OUT_FILE_NAME;
         
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=\'' +text + '\':fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        const param = 'drawtext=fontfile=:fontsize=24:text=\'%{localtime\:%a %b %d %Y}\':fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
         const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
