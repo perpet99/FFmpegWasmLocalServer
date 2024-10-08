@@ -64,6 +64,7 @@ const runFFmpeg2 = async (filelist = [] , args, ofilename,extraFiles = [],messag
   let file = null;
   let timeMessage = ""
   let timeMessage2 = ""
+  let speedMessage = ""
 
   const Core = await createFFmpegCore({
     printErr: (m) => {
@@ -80,7 +81,13 @@ const runFFmpeg2 = async (filelist = [] , args, ofilename,extraFiles = [],messag
         timeMessage2 = m.substr(index+5,11);
         }
  
-      message.innerHTML =  timeMessage2 + " / " + timeMessage;
+      index = m.indexOf('speed')
+       if( -1 < index){
+        speedMessage = m.substr(index,11);
+        }
+ 
+
+      message.innerHTML =  timeMessage2 + " / " + timeMessage + "  (" + speedMessage + ")"; 
     },
     // process : ({ ratio }) => {
     //   console.log(ratio);
