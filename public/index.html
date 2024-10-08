@@ -161,7 +161,7 @@ crossorigin="anonymous"></script>
 
 
         //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        const param = 'scale=1280:960,drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
         
 
         
@@ -170,7 +170,7 @@ crossorigin="anonymous"></script>
         // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
-        const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
+        const args = ['-i', IN_FILE_NAME, '-vf', param,  OUT_FILE_NAME];
 
         //message.innerHTML = 'Writing file to MEMFS';
         

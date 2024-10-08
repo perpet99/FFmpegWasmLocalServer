@@ -62,11 +62,32 @@ const runFFmpeg = async (ifilename, data, args, ofilename, extraFiles = [],messa
 const runFFmpeg2 = async (filelist = [] , args, ofilename,extraFiles = [],message) => {
   let resolve = null;
   let file = null;
+  let timeMessage = ""
+  let timeMessage2 = ""
+
   const Core = await createFFmpegCore({
     printErr: (m) => {
-      console.log(m);
-      message.innerHTML = m;
+       console.log(m);
+      let mm = String(m)
+      
+      let index = m.indexOf('Duration')
+      if( -1 < index){
+         timeMessage = m.substr(index+10,11);
+       }
+
+       index = m.indexOf('time')
+       if( -1 < index){
+        timeMessage2 = m.substr(index+5,11);
+        }
+ 
+      message.innerHTML =  timeMessage2 + " / " + timeMessage;
     },
+    // process : ({ ratio }) => {
+    //   console.log(ratio);
+
+    // }
+    // ,
+
     print: (m) => {
       console.log(m);
       if (m.startsWith('FFMPEG_END')) {
@@ -74,6 +95,14 @@ const runFFmpeg2 = async (filelist = [] , args, ofilename,extraFiles = [],messag
       }
     },
   });
+  
+
+  
+  // Core.setProgress(({ ratio }) => {
+    
+  //   console.log(ratio);
+
+  // });
 
   filelist.forEach(({ name, data: d }) => {
     Core.FS.writeFile(name, d);
