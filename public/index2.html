@@ -171,6 +171,10 @@ crossorigin="anonymous"></script>
       
       async function convert(){
 
+        const target = document.getElementById('convert');
+        target.disabled = true;
+
+        
         //const IN_FILE_NAME = 'video.mp4';
         const OUT_FILE_NAME = 'video2.mp4';
         
@@ -374,6 +378,8 @@ crossorigin="anonymous"></script>
       document.getElementById('uploader').addEventListener('change', transcode);
     </script>
     
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.min.js"></script> -->
 
     <script src="js/ffmpeg/ffmpeg-core.js"></script>
   </body>

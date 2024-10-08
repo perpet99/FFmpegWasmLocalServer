@@ -155,6 +155,11 @@ crossorigin="anonymous"></script>
       
       async function convert(){
 
+
+        const target = document.getElementById('convert');
+        target.disabled = true;
+
+
         const IN_FILE_NAME = 'video.mp4';
         const OUT_FILE_NAME = 'video2.mp4';
         
