@@ -24,6 +24,10 @@ app.use(express.static(path.join(__dirname, "public")))
 .set("view engine", "html")
 .get("/", (req, res) => res.render("index.html"))
 .get("/index.html", (req, res) => res.render("index.html"))
+.get("/index2.html", (req, res) => res.render("index2.html"))
+.get("/index3.html", (req, res) => res.render("index3.html"))
+.get("/index4.html", (req, res) => res.render("index4.html"))
+
 .listen(PORT, () => {
   console.log(`FFmpeg App is listening on port ${PORT}!`)
 });
