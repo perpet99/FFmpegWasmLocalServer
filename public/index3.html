@@ -29,26 +29,69 @@ crossorigin="anonymous"></script>
   </head>
   <body>
 
+
     <h3>MENU</h3>
 
-    
-    <h3>1. add date to video file</h3>
+    <a href="./index.html">1. add date to video file</a>
     <a href="./index2.html">2. merge video file</a>
-
+    <h3>3. Concatenate mp4 Files</h3>
 
     <hr width="100%" />
 
-    <a href="https://www.youtube.com/watch?v=2srRDfk6Hbk">demo link</a>
+    <h3>Concatenate mp4 files</h3>
+    <h3>you need file select multi files </h3>
+    <h3>you can select multi file by mouse click with control key </h3>
 
-    <h3>pc, mobile  크롬, 파이어폭스 브라우저에서만 동작합니다.(아이폰에서 테스트 안해봤어요)</h3>
 
-    <img src="3.png" alt="My Image">
+    <form>
+    <input type="file" id="uploader" multiple style="font-size:28px;">
+    </form>
 
-    <script src="/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
-    <script src="/assets/util/package/dist/umd/index.js"></script>
+    <p id="message">Upload a video</p>
+    
+    <label for="datetime">recording date
+      <input type="datetime-local"
+             id="datetime"
+             step="1"
+             disabled = "true"
+             >
+    </label>
+
+
+
+
+    <h3> </h3>
+
+    <video width="640" height="480" id="output-video" controls></video><br/>
 
     
-    <!-- <script type="text/javascript" src="js/utils.js"></script> -->
+    <a id="download" style="font-size:56px;">
+      download link
+    </a>
+
+    <h3> </h3>
+
+    <input type='button' disabled="false" style="font-size:28px;" value='convert' id='convert' onclick='convert()'/>
+
+    
+    <p id="message2"> </p>
+
+    <a href="mailto:perpet99@gmail.com"> developer email : perpet99@gmail.com</a>
+    
+
+
+    <h3>You have to wait until time is 00:00:60 sec </h3>
+
+    <img src="2.png" alt="My Image">
+   
+
+    <h3>you can download by link</h3>
+
+    <img src="1.png" alt="My Image">
+
+
+
+    <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/arial.ttf.js"></script>
     <script type="text/javascript">
       const message = document.getElementById('message');
@@ -97,73 +140,32 @@ crossorigin="anonymous"></script>
         
       }
 
-      var fileData
+      var fileList = []
+      var fileDataList
+      var args = []
+
       //var dateInfo
       function show(){
 
       }
 
 
-      const { fetchFile } = FFmpegUtil;
-      const { FFmpeg } = FFmpegWASM;
-      let ffmpeg = null;
-
-      const b64ToUint8Array = (str) => (Uint8Array.from(atob(str), c => c.charCodeAt(0)));
-
-      const runFFmpeg3 = async (filelist = [] , args, ofilename,extraFiles = [],message) => {
-        let resolve = null;
-        let file = null;
-
-        
-        if (ffmpeg === null) {
-          ffmpeg = new FFmpeg();
-          ffmpeg.on("log", ({ message }) => {
-            console.log(message);
-          })
-          ffmpeg.on("progress", ({ progress, time }) => {
-            message.innerHTML = `${progress * 100} %, time: ${time / 1000000} s`;
-          });
-          await ffmpeg.load({
-            coreURL: "/assets/core/package/dist/umd/ffmpeg-core.js",
-          });
-        }
-              
-        filelist.forEach(({ name, data: d }) => {
-          ffmpeg.writeFile(name, d);
-        });
       
-        extraFiles.forEach(({ name, data: d }) => {
-          ffmpeg.writeFile(name, d);
-        });
-      
-        await ffmpeg.exec(args);
-      
-        await new Promise((_resolve) => { resolve = _resolve });
-      
-        if (typeof ofilename !== 'undefined') {
-          console.log("success")
-          console.log(ofilename)
-      
-          file = ffmpeg.readFile(ofilename);
-          ffmpeg.unlink(ofilename);
-        }
-
-        return { Core, file };
-      };
-
       async function convert(){
 
-        const IN_FILE_NAME = 'video.mp4';
+        const target = document.getElementById('convert');
+        target.disabled = true;
+
+        
+        //const IN_FILE_NAME = 'video.mp4';
         const OUT_FILE_NAME = 'video2.mp4';
         
-
-
         
         var dateInfo = getText2(convertUTCDateToLocalDate2(new Date(dt.valueAsNumber)))
 
 
         //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text="' +getText(files[0].name) + '":fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
-        const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
+        //const param = 'drawtext=fontfile=arial.ttf:fontsize=24:text=' +getText(dateInfo) + ':rate=30:fontcolor=white:box=1:boxcolor=0x00000000@1:x=(w-text_w)/10:y=text_h+10';
         
 
         
@@ -172,14 +174,35 @@ crossorigin="anonymous"></script>
         // const args = ['-i', IN_FILE_NAME, '-vf', `drawtext=fontfile=arial.ttf:text='Artist':fontsize=32:text='22012-06-06 time=':timecode='09:57:00:00':r=60:x=10: y=10: fontcolor=white: box=1: boxcolor=0x00000000@1`, OUT_FILE_NAME];
 
         //const args = ['-i', IN_FILE_NAME, '-vf', 'drawtext=fontfile=/arial.ttf:text=\'Artist\':fontcolor=blue:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2', OUT_FILE_NAME];
-        const args = ['-i', IN_FILE_NAME, '-vf', param, OUT_FILE_NAME];
+        const param = '  -i 1.mp4 -i 2.mp4 -i 3.mp4 -i 4.mp4 -y -filter_complex "nullsrc = size = 160x480[base];[0:v] setpts = PTS - STARTPTS, scale = 160x120[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 160x120[upperright];[2:v] setpts = PTS - STARTPTS, scale = 160x120[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 160x120[lowerright];[base][upperleft] overlay = shortest = 1[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 120[tmp2];[tmp2][lowerleft] overlay = shortest = 1:y = 240[tmp3];[tmp3][lowerright] overlay = shortest = 1:y = 360" -c:v h264 video2.mp4'
+
 
         //message.innerHTML = 'Writing file to MEMFS';
         
         const now = Date.now();
+
         console.time(`[${now}] ${dateInfo} execution time`);
         //message.innerHTML = 'Start to transcode';
-        const { file } = await runFFmpeg3([{ name: IN_FILE_NAME, data: fileData }], args, OUT_FILE_NAME, [{ name: 'arial.ttf', data: b64ToUint8Array(ARIAL_TTF) }],message2)
+
+        
+
+        
+        
+        
+        
+
+
+        args.push("-c")
+        args.push("copy")
+        args.push("video2.mp4")
+
+        console.log("---------------------------------")
+        console.log(fileList)
+        console.log(args)
+        console.log("---------------------------------")
+
+        const { file } = await runFFmpeg2(fileList, args, OUT_FILE_NAME,[],message2)
+
         const video = document.getElementById('output-video');
         video.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
 
@@ -254,17 +277,53 @@ crossorigin="anonymous"></script>
         
         let fileDate = null
         
-        
+        // args = ["-f","concat","-safe","0"]
+
         try{
-
           
-          fileData = await fetchFile(files[0])
+          var count = 0;
+
+          args.push("-f")
+          args.push("concat")
+          args.push("-i")
+          args.push("files.txt")
+
+          var args2 = "concat:"
+
+          // Step 1: Create the text content
+          let textContent = "";
+
+          // Step 2: Convert the text content to a Uint8Array
+
+
+          for (let i = 0; i < files.length; i++) {
+            
+            var fi = files[i]
+            var str = i.toString() + ".mp4"
+            
+            textContent += `file ${str}\n`;
+
+            var data2 = new Uint8Array(await readFromBlobOrFile(fi))
+            fileList.push({ name: str, data: data2})
+            
+            if( i == 0){
+              args2 += str
+            }else{
+              args2 += "|" + str
+            }
+            
+            message.innerHTML = "loading :" + fi.name;
+
+          }
+
+          const encoder = new TextEncoder();
+          const textUint8Array = encoder.encode(textContent);
+
+          fileList.push({ name: 'files.txt', data: textUint8Array})
+
+
+          //args.push(args2)
           
-        
-          dateInfo = files[0].name
-
-          message.innerHTML = getText(files[0].name);
-
 
           let text = removeFileName(files[0].name);
           console.log(text)
@@ -285,52 +344,17 @@ crossorigin="anonymous"></script>
 
           dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
 
+          const target = document.getElementById('convert');
+          target.disabled = false;
 
-
+          
         }catch (err)
         {
 
-       
 
+            console.log(err)
           
         }
-
-        try{
-          if( !fileDate ){
-            let fileName = files[0].name
-            let yy = fileName.substr(0,4)
-            let mm = fileName.substr(4,2)
-            let dd = fileName.substr(6,2)
-
-            let h = fileName.substr(9,2)
-            let m = fileName.substr(11,2)
-            let s = fileName.substr(13,2)
-            
-            var str = "{0}-{1}-{2} {3}:{4}:{5}".format(yy,mm,dd,h,m,s)
-            console.log(str)
-
-            fileDate  = new Date(str)
-            
-            console.log(fileDate.toString())
-
-            dt.value = convertUTCDateToLocalDate(fileDate).toISOString().slice(0,19);
-
-
-          }
-
-        }catch (err){
-          console.log(err)
-          message.style.color = 'red';
-          message.innerHTML = '날짜 정보를 파일명에서 얻어오지 못했습니다.! 직접 날짜를 선택해 주세요.';
-
-          var dd  = new Date()
-          
-          console.log(dd.toString())
-
-          dt.value = convertUTCDateToLocalDate(dd).toISOString().slice(0,16);
-
-        }
-
         
         //await convert(data,files[0].name)
 
@@ -343,6 +367,8 @@ crossorigin="anonymous"></script>
       document.getElementById('uploader').addEventListener('change', transcode);
     </script>
     
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.min.js"></script> -->
 
     <script src="js/ffmpeg/ffmpeg-core.js"></script>
   </body>
