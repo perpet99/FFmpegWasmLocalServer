@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play MP4 File</title>
+</head>
+<body>
+    <h1>Select and Play an MP4 File</h1>
+    <input type="file" id="fileInput" accept="video/mp4" />
+    <video id="videoPlayer" width="600" controls></video>
+
+    
+</body>
+</html>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const fileURL = URL.createObjectURL(file);
+            console.log(fileURL)
+            videoPlayer.src = fileURL;
+            videoPlayer.play();
+        }
+    });
+    
+
+</script>
