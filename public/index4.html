@@ -189,6 +189,8 @@
 
         
 	</body>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&callback=initMap" async defer> </script>
     <script >
 
                 // Initialize and add the map
@@ -203,7 +205,8 @@
         const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
         // The map, centered at Uluru
-        map = new Map(document.getElementById("map"), {
+        //map = new Map(document.getElementById("map"), {
+        map = new Map(document.querySelector("td#showMap"), {
             zoom: 4,
             center: position,
             mapId: "DEMO_MAP_ID",
@@ -686,7 +689,8 @@
         document.querySelector("td#showMap").innerHTML = ""
         document.querySelector("td#showMap").appendChild(iframe)
     }
-    test()
+
+    //test()
 
     function playVideos(){
         frontVideo.play()
