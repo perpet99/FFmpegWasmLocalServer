@@ -46,9 +46,20 @@
             code {
                 background:lightgrey
             }
+
+            #map {
+                height: 100%;
+              }
+              html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+              }
         </style>
     </head>
     <body>
+        
+        
         <div>
             <div>
                 
@@ -190,35 +201,50 @@
         
 	</body>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&callback=initMap" async defer> </script>
-    <script >
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&loading=async&callback=initMap&libraries=map,marker">
+    </script>
 
-                // Initialize and add the map
+    
+
+    <script type='text/javascript'>
+
+                // Initialize and add the map AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E
         let map;
 
         async function initMap() {
-        // The location of Uluru
-        const position = { lat: -25.344, lng: 131.031 };
-        // Request needed libraries.
-        //@ts-ignore
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+            return
+            // The location of Uluru
+            const position = { lat: -25.344, lng: 131.031 };
+            // Request needed libraries.
+            //@ts-ignore
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-        // The map, centered at Uluru
-        //map = new Map(document.getElementById("map"), {
-        map = new Map(document.querySelector("td#showMap"), {
-            zoom: 4,
-            center: position,
-            mapId: "DEMO_MAP_ID",
-        });
+            // The map, centered at Uluru
+            //map = new Map(document.getElementById("map"), {
+            //var iframe = document.createElement("iframe")
+            //document.querySelector("td#showMap").innerHTML = ""
+                
 
-        // The marker, positioned at Uluru
-        const marker = new AdvancedMarkerElement({
-            map: map,
-            position: position,
-            title: "Uluru",
-        });
+            map = new Map(document.querySelector("td#showMap"), {
+                zoom: 12,
+                center: position,
+                mapId: "DEMO_MAP_ID",
+            });
+
+            // The marker, positioned at Uluru
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: position,
+                title: "Uluru",
+            });
+            
+            //document.querySelector("td#showMap").appendChild(iframe)
+
         }
+
+        //window.initMap = initMap;
 
         //initMap();
         //console.log("init map")
@@ -684,13 +710,13 @@
         //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
         iframe.src = "https://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=12&center=-27.344,131.036"
         
-        console.log('test 2')
+        console.log('test 3')
 
         document.querySelector("td#showMap").innerHTML = ""
         document.querySelector("td#showMap").appendChild(iframe)
     }
 
-    //test()
+    test()
 
     function playVideos(){
         frontVideo.play()
