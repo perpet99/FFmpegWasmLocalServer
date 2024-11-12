@@ -2,6 +2,7 @@
   "name": "FFmpegWasmLocalServer",
   "version": "1.0.0",
   "description": "Converts multimedia data such as audio and video files into other formats. Enables volume control, content filter etc. with ffmpeg wrapper library.",
+  
   "main": "server.js",
   "scripts": {
     "download": "node download-assets.js",
@@ -31,5 +32,6 @@
     "openurl": "^1.1.1",
     "path": "^0.12.7",
     "tar": "^6.1.15"
+    
   }
 }
