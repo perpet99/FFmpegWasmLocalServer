@@ -60,7 +60,7 @@
                 <br>
                 <a href="./index3.html">3. Concatenate mp4 Files</a>
 
-                <h3>TeslaCam Viewer</h3>
+                <h3>TeslaCam Viewer(My webapp do not any install and any upload)</h3>
             </div>
 
             <div>
@@ -110,14 +110,14 @@
                 </tr>
                 <tr>
                     <td>
-                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('left')">Add timestamp</button>    
+                        <button class="skip" style="height: 40;color:blue" onclick="convertTimestampByName('left')">Add timestamp video</button>    
                         <a id="leftdownload">
                             download link
                           </a>
                       
                     </td>
                     <td>
-                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('front')">Add timestamp</button>    
+                        <button class="skip" style="height: 40;color:blue" onclick="convertTimestampByName('front')">Add timestamp video</button>    
                         <a id="frontdownload">
                             download link
                           </a>
@@ -125,7 +125,7 @@
                     </td>
 
                     <td>
-                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('right')">Add timestamp</button>    
+                        <button class="skip" style="height: 40;color:blue" onclick="convertTimestampByName('right')">Add timestamp video</button>    
                         <a id="rightdownload">
                             download link
                           </a>
@@ -143,7 +143,7 @@
                         
                     </td>
                     <td>
-                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('back')">Add timestamp</button>    
+                        <button class="skip" style="height: 40;color:blue" onclick="convertTimestampByName('back')">Add timestamp video</button>    
                         <a id="backdownload">
                             download link
                           </a>
@@ -159,9 +159,9 @@
             </table> 
         </div>
         <div class="controls">
-            <button class="skip" style="height: 40;" onclick="convertMerge2(0)">merge video files (diamond)</button>    
-            <button class="skip" style="height: 40;" onclick="convertMerge2(1)">merge video files (cross)</button>    
-            <button class="skip" style="height: 40;" onclick="convertMerge2(2)">merge video files (vertical)</button>    
+            <button class="skip" style="height: 40;color:blue" onclick="convertMerge2(0)">merge video files (diamond) video</button>    
+            <button class="skip" style="height: 40;color:blue" onclick="convertMerge2(1)">merge video files (cross) video</button>    
+            <button class="skip" style="height: 40;color:blue" onclick="convertMerge2(2)">merge video files (vertical) video</button>    
             <a id="mergedownload">
                 download link
               </a>
@@ -661,7 +661,8 @@
             
             var zoom = 2000
             var iframe = document.createElement("iframe")
-            iframe.src = "https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d"+zoom+"!2d"+data.est_lon+"!3d"+data.est_lat+"!!!!!!!!!!!"
+            //iframe.src = "https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d"+zoom+"!2d"+data.est_lon+"!3d"+data.est_lat+"!!!!!!!!!!!"
+            iframe.src = `https://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=16&center=${data.est_lat},${data.est_lon}`
             //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E"+zoom+"!2d"+data.est_lon+"!3d"+data.est_lat+"!!!!!!!!!!!"
             //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
             document.querySelector("td#showMap").innerHTML = ""
@@ -677,11 +678,12 @@
         var zoom = 2000
         var iframe = document.createElement("iframe")
         //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E"+zoom+"!2d"+data.est_lon+"!3d"+data.est_lat+"!!!!!!!!!!!"
-        iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
+        //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
+        iframe.src = "https://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=12&center=-25.344,131.036"
         document.querySelector("td#showMap").innerHTML = ""
         document.querySelector("td#showMap").appendChild(iframe)
     }
-    //test()
+    test()
 
     function playVideos(){
         frontVideo.play()
