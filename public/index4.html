@@ -679,7 +679,10 @@
         var iframe = document.createElement("iframe")
         //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E"+zoom+"!2d"+data.est_lon+"!3d"+data.est_lat+"!!!!!!!!!!!"
         //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
-        iframe.src = "http://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=12&center=-25.344,131.036"
+        iframe.src = "http://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=12&center=-26.344,131.036"
+        
+        console.log('test 1')
+
         document.querySelector("td#showMap").innerHTML = ""
         document.querySelector("td#showMap").appendChild(iframe)
     }
