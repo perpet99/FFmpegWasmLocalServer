@@ -64,9 +64,10 @@
             </div>
 
             <div>
-                <strong>Select TeslaCam Directory</strong>(Must be in same directory as Index.html):<br/> 
-                <input type="file" id="fileBrowser" accept="video/mp4" webkitdirectory multiple/>
-                <!-- <button id="selectFolderBtn">Select Folder</button> -->
+                <strong>Select TeslaCam Directory</strong><br/> 
+                <br/> 
+                <input style="font-size:x-large;" type="file" id="fileBrowser" accept="video/mp4" webkitdirectory multiple/>
+                <!-- <button style="font-size:x-large;" id="selectFolderBtn">Select TeslaCam Folder</button> -->
                 <h2>Some browsers may show an additional security prompt verifying you trust the site before "uploading". Files are not uploaded</h2>
             </div>
             <div>   
@@ -109,14 +110,26 @@
                 </tr>
                 <tr>
                     <td>
-                        <button class="skip" style="height: 40;" onclick="skipTo(5)">Add timestamp</button>    
+                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('left')">Add timestamp</button>    
+                        <a id="leftdownload">
+                            download link
+                          </a>
+                      
                     </td>
                     <td>
-                        <button class="skip" onclick="skipTo(5)">5</button>    
+                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('front')">Add timestamp</button>    
+                        <a id="frontdownload">
+                            download link
+                          </a>
+
                     </td>
 
                     <td>
-                        <button class="skip" onclick="skipTo(5)">5</button>    
+                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('right')">Add timestamp</button>    
+                        <a id="rightdownload">
+                            download link
+                          </a>
+
                     </td>
 
                 </tr>
@@ -125,34 +138,58 @@
                     <td colspan="1"><video class="back" src="" controls controlsList="play pause"></video></td>
                     <td colspan="1"></td>
                 </tr>
+                <tr>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        <button class="skip" style="height: 40;" onclick="convertTimestampByName('back')">Add timestamp</button>    
+                        <a id="backdownload">
+                            download link
+                          </a>
+
+                    </td>
+
+                    <td>
+                        
+                    </td>
+
+                </tr>
+
             </table> 
         </div>
         <div class="controls">
-            <button class="skip" onclick="skipTo(5)">5</button>    
+            <button class="skip" style="height: 40;" onclick="convertMerge2(0)">merge video files (diamond)</button>    
+            <button class="skip" style="height: 40;" onclick="convertMerge2(1)">merge video files (cross)</button>    
+            <button class="skip" style="height: 40;" onclick="convertMerge2(2)">merge video files (vertical)</button>    
+            <a id="mergedownload">
+                download link
+              </a>
         </div>
 
         <div class="readme">
             <h2>README</h2>
             
-            <a href="https://github.com/Lythinari/TeslaCamViewer">code by github</a>
+            <a href="https://github.com/Lythinari/TeslaCamViewer">code by TeslaCamViewer</a>
+
             <hr/>
             <strong>Directory Placement</strong><br/>
-            This <code>index.html</code> file <strong>must</strong> be at the same level as the <code>TeslaCam</code> folder which can be placed directly on the root of the USB drive.<br/>
+            
             <strong>Example:</strong><br/>
             <code>
             Root Folder<br/>
-            |- index.html<br/>
             |- TeslaCam(USB Drive Top Level Folder)<br/>
             &nbsp;&nbsp;&nbsp;|- Saved Clips<br/>
             &nbsp;&nbsp;&nbsp;|- Sentry Videos<br/>
             &nbsp;&nbsp;&nbsp;|- ...<br/>
             </code><br/>
         </div>
-        <div id="map"></div>
-        <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-            ({key: "AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E", v: "weekly"});</script>
+
+        
+
+        
 	</body>
-    <script>
+    <script >
 
                 // Initialize and add the map
         let map;
@@ -185,7 +222,79 @@
       </script>
 
 
+      <script src="js/ffmpeg/ffmpeg-core.js"></script>
+      <script type="text/javascript" src="js/utils2.js"></script>
+      <script type="text/javascript" src="js/arial.ttf.js"></script>
+  
     <script  >
+
+        
+        //import * as convertlib from './js/convertlib.js'
+        
+
+    async function convertMerge2(type){
+
+
+        pauseVideos()
+
+        var fi = carousel[carouselIndex]
+        
+        var fileDataF = new Uint8Array(await readFromBlobOrFile(fi.frontFile));
+        var fileDataL = new Uint8Array(await readFromBlobOrFile(fi.leftFile));
+        var fileDataR = new Uint8Array(await readFromBlobOrFile(fi.rightFile));
+        var fileDataB = new Uint8Array(await readFromBlobOrFile(fi.backFile));
+
+        var mergedownload = document.getElementById('mergedownload');
+
+        var fileList =  [{ name: "1.mp4", data: fileDataF },{ name: "2.mp4", data: fileDataL},{ name: "3.mp4", data: fileDataR },{ name: "4.mp4", data: fileDataB }]
+        var args = []
+        if( type == 0){
+            args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size= 1920x960[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1:x = 640[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 240[tmp2];[tmp2][lowerleft] overlay = shortest = 1:x = 1280:y = 240[tmp3];[tmp3][lowerright] overlay = shortest = 1:x=640:y = 480', '-pix_fmt', 'yuv420p','video2.mp4']
+          }else if(type == 1){
+            args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size = 1280x1440[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1:x = 320[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 480[tmp2];[tmp2][lowerleft] overlay = shortest = 1:x = 640:y = 480[tmp3];[tmp3][lowerright] overlay = shortest = 1:x=320:y = 960', '-pix_fmt', 'yuv420p','video2.mp4']
+          }else{
+            args = ["-i", "1.mp4", "-i" ,"2.mp4", "-i", "3.mp4" ,"-i", "4.mp4", "-filter_complex", 'color=c=black:size = 640x1920[base];[0:v] setpts = PTS - STARTPTS, scale = 640x480[upperleft];[1:v] setpts = PTS - STARTPTS, scale = 640x480[upperright];[2:v] setpts = PTS - STARTPTS, scale = 640x480[lowerleft];[3:v] setpts = PTS - STARTPTS, scale = 640x480[lowerright];[base][upperleft] overlay = shortest = 1[tmp1];[tmp1][upperright] overlay = shortest = 1:y = 480[tmp2];[tmp2][lowerleft] overlay = shortest = 1:y = 960[tmp3];[tmp3][lowerright] overlay = shortest = 1:y = 1440', '-pix_fmt', 'yuv420p','video2.mp4']
+          }
+
+          const OUT_FILE_NAME = 'video2.mp4';
+
+          const { file } = await runFFmpeg2(fileList, args, OUT_FILE_NAME,[],mergedownload)
+          
+          backVideo.src = URL.createObjectURL(new Blob([file.buffer], { type: 'video/mp4' }));
+  
+          mergedownload.innerHTML = 'download link'
+
+          download2(backVideo.src,removeFileName(fi.frontFile.name)+'.mp4',mergedownload);
+          
+    }
+
+    async function convertTimestampByName(arg){
+
+        pauseVideos()
+        //document.querySelector("input[name=autoplay]").checked = false
+
+        if(arg == "front"){
+            await convertTimestamp(carousel[carouselIndex].frontFile,frontVideo,frontdownload)
+            frontVideo.play()
+        }
+        if(arg == "back"){
+            await convertTimestamp(carousel[carouselIndex].backFile,backVideo,backdownload)
+            backVideo.play()
+        }
+        if(arg == "left"){
+            await convertTimestamp(carousel[carouselIndex].leftFile,leftVideo,leftdownload)
+            leftVideo.play()
+        }
+        if(arg == "right"){
+            await convertTimestamp(carousel[carouselIndex].rightFile,rightVideo,rightdownload)
+            rightVideo.play()
+        }
+
+    }
+
+
+
+
 	var carouselIndex;
 	var selectItemIndex;
 	var files;
@@ -195,6 +304,11 @@
 	
     var carousel = []
     var carouselEventFiles = []
+    var leftdownload = document.getElementById('leftdownload');
+    var rightdownload = document.getElementById('rightdownload');
+    var frontdownload = document.getElementById('frontdownload');
+    var backdownload = document.getElementById('backdownload');
+
     var title = document.querySelector("div.title")
     var backVideo = document.querySelector("video.back")
     var frontVideo = document.querySelector("video.front")
@@ -207,6 +321,8 @@
     var dateSelector = document.querySelector("select.date-select")
 
     var skip = document.querySelector("button.skip")
+
+
 
 
     class TeslaCamFile {
@@ -222,17 +338,34 @@
         constructor(file){
             this.clipName = file.name
             this.clipDate = Date.parse(this.parseToDate(file.name))
-            this.getDirectories(file)
+            //this.getDirectories(file)
             this.url = URL.createObjectURL(file)
             //just in case we need it for the future
             this.file = file
         }
 
         getDirectories(file){
+            
             this.separator = file.webkitRelativePath.replace(file.name, "").substr(-1)
             var directoryParts = file.webkitRelativePath.split(this.separator)
             this.clipType = directoryParts[1]
             this.triggerDate = directoryParts[2]
+            if( this.clipType == "RecentClips"){
+            }else if( this.clipType == "SavedClips"){
+            }else if( this.clipType == "SentryClips"){
+            }else{
+                this.clipType = "NONE"
+                this.triggerDate = directoryParts[1]
+            }
+            
+        }
+
+        getDirectories2(clipType,triggerDate){
+            
+            this.separator = '/'
+            
+            this.clipType = clipType
+            this.triggerDate = triggerDate
         }
 
         //format to ISO(sorta) - no TZ so defaults to local
@@ -272,14 +405,6 @@
         }
     }
 	
-    function removeFileName(str)
-    {
-      return str.replaceAll('-front.mp4','')
-        .replaceAll('-back.mp4','')
-        .replaceAll('-left_repeater.mp4','')
-        .replaceAll('-right_repeater.mp4','') ;
-
-    }
 
     function updateFileInfo(filelist,file){
         if(file.name.endsWith("-front.mp4")){
@@ -289,6 +414,7 @@
         }else{
             return null
         }
+        
 
         var keyName = removeFileName(file.name)
         var findFileInfo = null
@@ -301,6 +427,7 @@
         })
         if( findFileInfo == null){
             
+            
 
             findFileInfo = new TeslaCamFile(file)
             findFileInfo.keyName = keyName
@@ -309,17 +436,22 @@
 
         if(file.name.endsWith("-front.mp4")){
             findFileInfo.frontUrl = URL.createObjectURL(file)
+            findFileInfo.frontFile = file
+
         }
 
         if(file.name.endsWith("-back.mp4")){
             findFileInfo.backUrl = URL.createObjectURL(file)
+            findFileInfo.backFile = file
         }
 
         if(file.name.endsWith("-left_repeater.mp4")){
             findFileInfo.leftUrl = URL.createObjectURL(file)
+            findFileInfo.leftFile = file
         }
         if(file.name.endsWith("-right_repeater.mp4")){
             findFileInfo.rightUrl = URL.createObjectURL(file)
+            findFileInfo.rightFile = file
         }
 
         return findFileInfo
@@ -327,6 +459,97 @@
     }
 
 
+    
+    async function readFilesRecursively(tcFiles,directoryHandle, clibtype ,triggertype ) {
+        for await (const entry of directoryHandle.values()) {
+            if (entry.kind === 'file') {
+                const file = await entry.getFile();
+                var fileInfo = updateFileInfo(tcFiles,file)
+                if(fileInfo != null){
+                    console.log(clibtype)
+                    fileInfo.getDirectories2(clibtype,triggertype)
+                }
+                
+                //if(file.name.endsWith(".mp4")){
+                  //  backVideo.src = URL.createObjectURL(file);
+                    //backVideo.play()
+                    //return
+                //}
+                
+            } else if (entry.kind === 'directory') {
+                if( entry.name == 'RecentClips'){
+                    await readFilesRecursively(tcFiles,entry, 'RecentClips','');
+                }else if( entry.name == 'SavedClips'){
+                    await readFilesRecursively(tcFiles,entry, 'SavedClips','');
+                }else if( entry.name == 'SentryClips'){
+                    await readFilesRecursively(tcFiles,entry, 'SentryClips','');
+                }else{
+                    await readFilesRecursively(tcFiles,entry, clibtype,entry.name);
+                }
+
+
+                //await readFilesRecursively(entry, path);
+                
+            }
+        }
+    }
+    
+
+    document.getElementById('selectFolderBtn')
+    var btn = document.getElementById('selectFolderBtn')
+    if( btn != null){
+        btn.addEventListener('click', async () => {
+        tcFiles = []
+        var eventFiles = {}
+
+        if ('showDirectoryPicker' in window) {
+            try {
+                // Open the directory picker
+                const directoryHandle = await window.showDirectoryPicker();
+    
+                // Read files recursively
+                await readFilesRecursively(tcFiles,directoryHandle,'NONE','');
+            } catch (err) {
+                console.error("Error reading files from folder:", err);
+            }
+        } else {
+            alert("The File System Access API is not supported in this browser.");
+        }
+
+
+        //Sort the files in ascending date
+        tcFiles.sort(function(a,b){
+            var firstDate = a.clipDate
+            var secondDate = b.clipDate
+            return firstDate - secondDate
+        })
+
+        // Create dropdown for clips
+        tmpDir = [] //track dir's added
+        // if(document.querySelector("select.date-select") != undefined) {
+        //     document.querySelector("select.date-select").remove()
+        // }
+        dateSelector.innerHTML = null
+
+        tcFiles.forEach((tcFile, index) => {
+            dir = tcFile.clipType+tcFile.separator+tcFile.triggerDate
+          
+            
+            if (!tmpDir.includes(dir)) {
+                tmpDir.push(dir)
+                var option = document.createElement("option")
+                option.innerText = dir
+                option.value = index // assume that the index is going to be the first clip for each new date.
+                dateSelector.appendChild(option)
+            }
+        })
+
+        carousel = tcFiles
+        carouselEventFiles = eventFiles
+        loadVideos(0)
+
+    });
+    }
 
 	//The following code uses webkitdirectory to get all the videos from a directory
     document.querySelector("input[type=file][id=fileBrowser]").addEventListener("change", function(e){
@@ -339,7 +562,9 @@
             var file = files[i]
             
             var fileInfo = updateFileInfo(tcFiles,file)
-
+            if( fileInfo != null){
+                fileInfo.getDirectories(file)
+            }
 
             //if(file.webkitRelativePath.endsWith("-back.mp4")){
                 //var tcFile = new TeslaCamFile(file)

@@ -35,7 +35,7 @@ crossorigin="anonymous"></script>
     <h3>1. add date to video file</h3>
     <a href="./index2.html">2. merge video file</a>
     <a href="./index3.html">3. Concatenate mp4 Files</a>
-    
+    <a href="./index4.html">4. TeslaCam Viewer</a>
     <hr width="100%" />
 
     <a href="https://www.youtube.com/watch?v=2srRDfk6Hbk">demo link</a>
@@ -227,7 +227,9 @@ crossorigin="anonymous"></script>
         if( text3.length != 3)
           throw 'error2'
 
-        return "\\'{0}  TIME=\\':timecode=\\'{1}:{2}:{3}:00\\'".format(text2[0], text3[0], text3[1],text3[2]);
+          var r = "\\'{0}  TIME=\\':timecode=\\'{1}:{2}:{3}:00\\'".format(text2[0], text3[0], text3[1],text3[2]);
+          console.log(r)
+        return r
       }
 
       function getText2(date) {
