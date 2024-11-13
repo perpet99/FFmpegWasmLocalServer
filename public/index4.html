@@ -2,10 +2,11 @@
     <head>
         <style>
             div {
-                border:1px solid;
+                
                 align-content: center;
             }
             div.title {
+                border:1px solid;
                 font-size: 25px;
                 text-align: center;
             }
@@ -16,18 +17,16 @@
                 display: inline-block;
             }
             .play_speed {
+                border:1px solid;
                 display: inline-block;
                 padding: 5px;
                 text-align: center;
             }
             .controls {
+                border:1px solid;
                 display: inline-block;
                 padding: 5px;
                 text-align: center;
-            }
-            .showMap > iframe {
-                width: 600px;
-                height: 450px;
             }
             video {
                 width: 600px;
@@ -60,7 +59,7 @@
     <body>
         
         
-        <div>
+        <div >
             <div>
                 
                 <h3>MENU,Tesla dashcam video converter</h3>
@@ -81,9 +80,10 @@
                 <!-- <button style="font-size:x-large;" id="selectFolderBtn">Select TeslaCam Folder</button> -->
                 <h2>Some browsers may show an additional security prompt verifying you trust the site before "uploading". Files are not uploaded</h2>
             </div>
-            <div>   
-                Browse Loaded Clips: <select class="date-select"><option>- - - - - -</option></select>
+            <div >   
+                Browse Loaded Clips: <select style="font-size:x-large;" class="date-select"><option>- - - - - -</option></select>
             </div>
+            <br>
         </div>
         
         <div class="global-controls">
@@ -145,9 +145,15 @@
 
                 </tr>
                 <tr>
-                    <td colspan="1" class="showMap" id="showMap"></td>
+                    <td  id="showMap">
+
+                        
+                    </td>
                     <td colspan="1"><video class="back" src="" controls controlsList="play pause"></video></td>
-                    <td colspan="1"></td>
+                    <td colspan="1">
+                      
+
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -210,39 +216,7 @@
     <script type='text/javascript'>
 
                 // Initialize and add the map AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E
-        let map;
-
-        async function initMap() {
-            return
-            // The location of Uluru
-            const position = { lat: -25.344, lng: 131.031 };
-            // Request needed libraries.
-            //@ts-ignore
-            const { Map } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-            // The map, centered at Uluru
-            //map = new Map(document.getElementById("map"), {
-            //var iframe = document.createElement("iframe")
-            //document.querySelector("td#showMap").innerHTML = ""
-                
-
-            map = new Map(document.querySelector("td#showMap"), {
-                zoom: 12,
-                center: position,
-                mapId: "DEMO_MAP_ID",
-            });
-
-            // The marker, positioned at Uluru
-            const marker = new AdvancedMarkerElement({
-                map: map,
-                position: position,
-                title: "Uluru",
-            });
-            
-            //document.querySelector("td#showMap").appendChild(iframe)
-
-        }
+    
 
         //window.initMap = initMap;
 
@@ -257,7 +231,44 @@
   
     <script  >
 
-        
+        let map;
+        let market;
+
+
+        async function initMap() {
+
+            // The location of Uluru
+            const position = { lat: -25.344, lng: 131.031 };
+            // Request needed libraries.
+            //@ts-ignore
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+            // The map, centered at Uluru
+            //map = new Map(document.getElementById("map"), {
+            var iframe = document.createElement("iframe")
+            //document.querySelector("td#showMap").innerHTML = ""
+                
+
+            map = new Map(document.querySelector("td#showMap"), {
+                zoom: 12,
+                center: position,
+                mapId: google.maps.MapTypeId.HYBRID,
+            });
+
+            // The marker, positioned at Uluru
+            marker = new AdvancedMarkerElement({
+                map: map,
+                position: position,
+                title: "Uluru",
+            });
+            
+            iframe.width = '100%'
+            iframe.height = '100%'
+
+            //document.querySelector("td#showMap").appendChild(iframe)
+
+        }
         //import * as convertlib from './js/convertlib.js'
         
 
@@ -667,14 +678,10 @@
 
         var file = carouselEventFiles[keyname]
 
-        if (file == undefined) {
-            document.querySelector("td#showMap").innerHTML = "can not find event info"
-        } else{
-            document.querySelector("td#showMap").innerHTML = "find event info"
-        }
+      
 
         var reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             var contents = e.target.result;
             var data = JSON.parse(contents)
             console.log("load event file")
@@ -682,6 +689,32 @@
 
 
             
+
+            var myLatLng=new google.maps.LatLng(data.est_lat, data.est_lon);
+            
+            const position = { lat: myLatLng.lat, lng: myLatLng.lng };
+
+            const newLocation = { lat: parseFloat(data.est_lat), lng: parseFloat(data.est_lon) };
+
+            var zoom = 14
+            await map.setZoom(zoom)
+
+            await map.setCenter(myLatLng)
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+            
+
+            marker = new AdvancedMarkerElement({
+                map: map,
+                position: newLocation,
+                title: "tesla",
+            });
+
+            //map.panTo(data.est_lat,data.est_lon)
+            //market.position = position
+            return
+
+
             //const myLatLng = { lat: -25.344, lng: 131.036 }; 
             // The map, centered at myLatLng 
             //const map = new google.maps.Map(document.getElementById("iframe"), { zoom: 4, center: myLatLng, }); 
@@ -710,13 +743,13 @@
         //iframe.src = "https://www.google.com/maps/embed/v1/place?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&q=Eiffel+Tower,Paris+France"
         iframe.src = "https://www.google.com/maps/embed/v1/view?key=AIzaSyC-vZgyaZC3Vep_IQuBFM3tTubzceKlq9E&zoom=12&center=-27.344,131.036"
         
-        console.log('test 3')
+        console.log('test 4')
 
         document.querySelector("td#showMap").innerHTML = ""
         document.querySelector("td#showMap").appendChild(iframe)
     }
 
-    test()
+    //test()
 
     function playVideos(){
         frontVideo.play()
